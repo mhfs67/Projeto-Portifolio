@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Assessoria jurídica especializada em cidadania europeia e naturalização">
+    <link rel="stylesheet" href="./static/bootstrap/css/bootstrap.css">
+    <link rel="stylesheet" href="./static/style.css">
+    <link rel="icon" type="image/png" href="./static/img/eu_flag.png">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <title>Alexandre Simões - Cidadania Europeia</title>
+    <style>
+        /* Estilos adicionais para melhor responsividade */
+        .menu-mobile {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            cursor: pointer;
+            z-index: 1001;
+            color: #fff;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px 15px;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 1199px) {
+            .menu-mobile {
+                display: block;
+            }
+
+            #header {
+                position: fixed;
+                left: -300px;
+                transition: left 0.3s ease;
+                z-index: 1000;
+                width: 300px;
+                height: 100vh;
+                overflow-y: auto;
+            }
+
+            #header.mobile-nav-active {
+                left: 0;
+            }
+
+            #main {
+                margin-left: 0;
+            }
+        }
+
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+        }
+
+        .overlay.active {
+            display: block;
+        }
+
+        /* Smooth scroll */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Animações */
+        [data-anime] {
+            opacity: 0;
+            transition: opacity 0.5s, transform 0.5s;
+        }
+
+        [data-anime].animate {
+            opacity: 1;
+        }
+
+        [data-anime="down"].animate {
+            transform: translateY(0);
+        }
+
+        [data-anime="down"] {
+            transform: translateY(-50px);
+        }
+
+        [data-anime="up"].animate {
+            transform: translateY(0);
+        }
+
+        [data-anime="up"] {
+            transform: translateY(50px);
+        }
+
+        [data-anime="left"].animate {
+            transform: translateX(0);
+        }
+
+        [data-anime="left"] {
+            transform: translateX(-50px);
+        }
+
+        [data-anime="right"].animate {
+            transform: translateX(0);
+        }
+
+        [data-anime="right"] {
+            transform: translateX(50px);
+        }
+
+        /* Melhorias no iframe do mapa */
+        .map-container {
+            position: relative;
+            overflow: hidden;
+            padding-top: 75%;
+        }
+
+        .map-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: 0;
+        }
+
+        /* Melhorias nos cards */
+        .card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        /* Loading do botão */
+        #btn-enviar-Loader {
+            display: none;
+        }
+
+        /* Alert posicionamento */
+        #alerta {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: none;
+        }
+
+        #alerta.show {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <i class="bi bi-list menu-mobile" id="menuMobile"></i>
+    <div class="overlay" id="overlay"></div>
+
+    <aside id="header">
+        <section class="profile">
+            <img src="./static/img/alexandre.png" alt="Alexandre Simões" class="rounded-circle">
+            <h1>Alexandre Simões</h1>
+            <div class="social-Links mt-4 text-center">
+                <a target="_blank" href="https://linkedin.com" aria-label="LinkedIn" title="LinkedIn">
+                    <i class="bi bi-linkedin"></i>
+                </a>
+                <a target="_blank" href="https://instagram.com" aria-label="Instagram" title="Instagram">
+                    <i class="bi bi-instagram"></i>
+                </a>
+                <a target="_blank" href="https://facebook.com" aria-label="Facebook" title="Facebook">
+                    <i class="bi bi-facebook"></i>
+                </a>
+                <a target="_blank" href="https://wa.me/5521994842441" aria-label="WhatsApp" title="WhatsApp">
+                    <i class="bi bi-whatsapp"></i>
+                </a>
+            </div>
+        </section>
+        <nav id="navbar" class="nav-menu">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#inicio">
+                        <i class="bi bi-house"></i> Início
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#somos">
+                        <i class="bi bi-file-earmark-person"></i> Quem Somos
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#breve">
+                        <i class="bi bi-currency-euro"></i> União Europeia
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#advogado">
+                        <i class="bi bi-person-fill"></i> O Advogado
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#atuacao">
+                        <i class="bi bi-list-columns"></i> Área de Atuação
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#contato">
+                        <i class="bi bi-envelope-at"></i> Contato
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </aside>
+
+    <main id="main">
+        <section id="inicio" class="row m-0 p-0">
+            <div class="col-md-5 d-flex justify-content-center align-items-center flex-column">
+                <h2 class="text-white text-shadow">Alexandre Simões</h2>
+                <span id="subtitle" class="text-white text-shadow">Advogado brasileiro e português</span>
+            </div>
+            <div class="col-md-7 d-flex justify-content-end align-items-end">
+                <div id="arraste" class="d-flex align-items-center">
+                    <i class="bi bi-arrow-down text-white pe-2 fs-2" aria-hidden="true"></i>
+                    <a href="#somos">Arraste para mais</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="somos" class="container mt-5">
+            <div class="row w-100">
+                <div class="col-md-12" data-anime="down">
+                    <h2 class="pt-3">Quem Somos</h2>
+                    <p>Especializado em Cidadania e Naturalização</p>
+                    <p>Assessoria a clientes que desejam obter Nacionalidade Europeia</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <img class="img-fluid shadow" src="./static/img/passaporte-europeu-1.png" 
+                         alt="Passaporte Europeu" data-anime="left">
+                </div>
+                <div class="col-md-8" data-anime="right">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-group list-group-flush fs-5">
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Cidadania Portuguesa
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Cidadania Italiana
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Cidadania Espanhola
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Cidadania Alemã
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Livre Circulação na UE
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-group list-group-flush fs-5">
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Naturalização
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Documentação Legal
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Consultoria Jurídica
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Processos Administrativos
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-check-circle-fill text-success"></i> Acompanhamento Total
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="breve" class="container mt-5 section-bg">
+            <div class="row w-100">
+                <div class="col-md-12" data-anime="down">
+                    <h2 class="pt-3">Breve Histórico da União Europeia</h2>
+                    <p class="lead">Conheça a história da maior união econômica e política do mundo</p>
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col-md-4 mb-4 mb-md-0">
+                    <img class="img-fluid shadow" src="./static/img/european_union_flags_generated.jpg"
+                        alt="Bandeiras União Europeia" data-anime="left">
+                </div>
+                <div class="col-md-8" data-anime="right">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <ul class="list-group list-group-flush fs-5">
+                                <li class="list-group-item">
+                                    <strong>1957</strong> - Tratado de Roma
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>1993</strong> - Tratado de Maastricht
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>2002</strong> - Implementação do Euro
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>2007</strong> - Tratado de Lisboa
+                                </li>
+                                <li class="list-group-item">
+                                    <strong>27</strong> - Países Membros
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <ul class="list-group list-group-flush fs-5">
+                                <li class="list-group-item">
+                                    <i class="bi bi-globe-americas"></i> 447 milhões de habitantes
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-currency-exchange"></i> Maior bloco econômico
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-airplane"></i> Livre circulação de pessoas
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-briefcase"></i> Oportunidades de trabalho
+                                </li>
+                                <li class="list-group-item">
+                                    <i class="bi bi-mortarboard"></i> Acesso a educação de qualidade
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="advogado" class="mt-5 cv">
+            <div class="container pb-5">
+                <h2 class="pt-3 pb-4">Quem é o Advogado</h2>
+                <div class="row">
+                    <div class="col-md-6">
+                        <h3 class="cv-title">Formação Acadêmica</h3>
+                        <div class="cv-item" data-anime="up">
+                            <h4>Direito Internacional</h4>
+                            <h5>2015 - 2017</h5>
+                            <p><em>Universidade de Lisboa, Portugal</em></p>
+                            <p>Pós-graduação em Direito Internacional com foco em nacionalidade e cidadania europeia</p>
+                        </div>
+                        <div class="cv-item" data-anime="up">
+                            <h4>Bacharel em Direito</h4>
+                            <h5>2008 - 2012</h5>
+                            <p><em>Universidade Federal do Rio de Janeiro</em></p>
+                            <p>Graduação em Direito com ênfase em Direito Civil e Internacional</p>
+                        </div>
+                        <div class="cv-item" data-anime="up">
+                            <h4>Certificações</h4>
+                            <h5>2018 - Presente</h5>
+                            <p><em>Ordem dos Advogados</em></p>
+                            <p>OAB/RJ e Ordem dos Advogados de Portugal</p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="cv-title">Experiência Profissional</h3>
+                        <div class="cv-item" data-anime="up">
+                            <h4>Especialista em Cidadania Europeia</h4>
+                            <h5>2017 - Presente</h5>
+                            <p><em>Escritório Próprio, Rio de Janeiro</em></p>
+                            <p>Mais de 500 processos de cidadania europeia finalizados com sucesso</p>
+                        </div>
+                        <div class="cv-item" data-anime="up">
+                            <h4>Consultor Jurídico Internacional</h4>
+                            <h5>2013 - 2017</h5>
+                            <p><em>Escritório Multinacional, Lisboa</em></p>
+                            <p>Assessoria jurídica para brasileiros na Europa e europeus no Brasil</p>
+                        </div>
+                        <div class="cv-item" data-anime="up">
+                            <h4>Advogado Associado</h4>
+                            <h5>2012 - 2013</h5>
+                            <p><em>Escritório de Advocacia, Rio de Janeiro</em></p>
+                            <p>Atuação em Direito Civil, Família e Sucessões</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="atuacao" class="container mt-5 section-bg">
+            <div class="container pb-5 pt-5" data-anime="left">
+                <h2 class="pb-4">Área de Atuação</h2>
+                <div id="carouselAtuacao" class="carousel carousel-dark slide" data-bs-ride="carousel">
+                    <div class="carousel-indicators">
+                        <button type="button" data-bs-target="#carouselAtuacao" data-bs-slide-to="0" class="active"
+                            aria-current="true" aria-label="Slide 1"></button>
+                        <button type="button" data-bs-target="#carouselAtuacao" data-bs-slide-to="1"
+                            aria-label="Slide 2"></button>
+                    </div>
+                    <div class="carousel-inner">
+                        <div class="carousel-item active" data-bs-interval="5000">
+                            <div class="row row-cols-1 row-cols-md-2 g-4">
+                                <div class="col">
+                                    <div class="card h-100 shadow">
+                                        <img src="./static/img/bandeira-portugal.png" class="card-img-top"
+                                            alt="Bandeira de Portugal">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Portugal</h5>
+                                            <p class="card-text">Advogado inscrito na Ordem dos Advogados de Portugal. Especialista em processos de naturalização portuguesa por descendência, casamento e residência legal.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card h-100 shadow">
+                                        <img src="./static/img/bandeira-italia.png" class="card-img-top" 
+                                             alt="Bandeira da Itália">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Itália</h5>
+                                            <p class="card-text">Atuação especializada em cidadania italiana por descendência (jure sanguinis), casamento e naturalização. Parceria com escritórios locais para agilizar processos.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-item" data-bs-interval="5000">
+                            <div class="row row-cols-1 row-cols-md-2 g-4">
+                                <div class="col">
+                                    <div class="card h-100 shadow">
+                                        <img src="./static/img/bandeira-espanha.png" class="card-img-top" 
+                                             alt="Bandeira da Espanha">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Espanha</h5>
+                                            <p class="card-text">Assessoria completa para cidadania espanhola por descendência, casamento e residência. Experiência com descendentes de sefarditas e processos de naturalização.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="card h-100 shadow">
+                                        <img src="./static/img/bandeira-alemanha.png" class="card-img-top"
+                                            alt="Bandeira da Alemanha">
+                                        <div class="card-body">
+                                            <h5 class="card-title">Alemanha</h5>
+                                            <p class="card-text">Atuação em processos de cidadania alemã por descendência, incluindo casos complexos de descendentes de judeus perseguidos pelo regime nazista e naturalização.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#carouselAtuacao"
+                        data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Anterior</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#carouselAtuacao"
+                        data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Próximo</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section id="contato" class="pt-5 pb-5">
+            <div class="container mb-5">
+                <h2 class="pt-3 pb-3">Contato</h2>
+                <div class="row">
+                    <div class="col-md-5 mb-4 mb-md-0">
+                        <div class="card p-5 shadow border-0 h-100" data-anime="up">
+                            <div class="endereco mb-4">
+                                <h4><i class="bi bi-geo-alt"></i> Localização:</h4>
+                                <p>Av. Rio Branco, 120 - Sala 811<br>Centro, Rio de Janeiro - RJ<br>CEP: 20040-001</p>
+                            </div>
+                            <div class="email mb-4">
+                                <h4><i class="bi bi-envelope"></i> Email:</h4>
+                                <p>alexandresimoes.adv@gmail.com</p>
+                            </div>
+                            <div class="telefone mb-4">
+                                <h4><i class="bi bi-telephone"></i> Telefone/WhatsApp:</h4>
+                                <p>(21) 99484-2441</p>
+                            </div>
+                            <div class="map-container">
+                                <iframe
+                                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3675.234371245648!2d-43.18090648943239!3d-22.904724679170016!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x997f5e41da097d%3A0x724d9c9f1bfd10fc!2sAv.%20Rio%20Branco%2C%20120%20-%20sala%20811%20-%20Centro%2C%20Rio%20de%20Janeiro%20-%20RJ%2C%2020040-001!5e0!3m2!1spt-BR!2sbr!4v1726004700744!5m2!1spt-BR!2sbr"
+                                    allowfullscreen="" loading="lazy"
+                                    referrerpolicy="no-referrer-when-downgrade">
+                                </iframe>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-7">
+                        <div class="card p-5 h-100 shadow border-0" data-anime="left">
+                            <form class="row g-3" id="contactForm" action="https://formsubmit.co/mhfs28@gmail.com" method="POST">
+                                <input type="hidden" name="_subject" value="Site: Solicitação de contato.">
+                                <input type="hidden" name="_captcha" value="false">
+                                <input type="hidden" name="_template" value="box">
+                                <input type="hidden" name="_next" value="https://seusite.com/obrigado.html">
+                                
+                                <div class="col-md-6">
+                                    <label for="nome" class="form-label">Nome *</label>
+                                    <input type="text" class="form-control" id="nome" name="name"
+                                        placeholder="Digite seu nome completo" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="seu@email.com" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="telefone" class="form-label">Telefone</label>
+                                    <input type="tel" class="form-control" id="telefone" name="telefone"
+                                        placeholder="(00) 00000-0000">
+                                </div>
+                                <div class="col-md-6">
+                                    <label for="assunto" class="form-label">Assunto</label>
+                                    <select class="form-select" id="assunto" name="assunto">
+                                        <option selected>Selecione...</option>
+                                        <option value="cidadania-portuguesa">Cidadania Portuguesa</option>
+                                        <option value="cidadania-italiana">Cidadania Italiana</option>
+                                        <option value="cidadania-espanhola">Cidadania Espanhola</option>
+                                        <option value="cidadania-alema">Cidadania Alemã</option>
+                                        <option value="outro">Outro</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label for="mensagem" class="form-label">Mensagem *</label>
+                                    <textarea class="form-control" id="mensagem" name="message" rows="8"
+                                        placeholder="Digite sua mensagem..." required></textarea>
+                                </div>
+                                <div class="col-12 d-flex justify-content-center mt-4">
+                                    <button id="btn-enviar" type="submit" class="btn btn-primary btn-lg">
+                                        <i class="bi bi-send"></i> Enviar mensagem
+                                    </button>
+
+                                    <button id="btn-enviar-Loader" class="btn btn-primary btn-lg" type="button" disabled>
+                                        <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+                                        <span role="status">Enviando...</span>
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div id="alerta" class="alert alert-success alert-dismissible fade" role="alert">
+            <i class="bi bi-check-circle-fill"></i> <strong>Sucesso!</strong> Mensagem enviada com sucesso!
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+    </main>
+
+    <footer id="footer">
+        <div class="container">
+            <div class="text-center py-4">
+                <p class="mb-0">&copy; <span id="year"></span> Copyright <strong>Alexandre Simões</strong></p>
+                <p class="small mb-0">Todos os direitos reservados. OAB/RJ | Ordem dos Advogados de Portugal</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="./static/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="./static/script.js"></script>
+    <script>
+        // Menu Mobile Toggle
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuMobile = document.getElementById('menuMobile');
+            const header = document.getElementById('header');
+            const overlay = document.getElementById('overlay');
+            const navLinks = document.querySelectorAll('#navbar .nav-link');
+
+            // Toggle menu
+            function toggleMenu() {
+                header.classList.toggle('mobile-nav-active');
+                overlay.classList.toggle('active');
+            }
+
+            menuMobile.addEventListener('click', toggleMenu);
+            overlay.addEventListener('click', toggleMenu);
+
+            // Fechar menu ao clicar em link
+            navLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 1200) {
+                        toggleMenu();
+                    }
+                    
+                    // Atualizar link ativo
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Animações ao scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('[data-anime]').forEach(element => {
+                observer.observe(element);
+            });
+
+            // Form submit handling
+            const form = document.getElementById('contactForm');
+            const btnEnviar = document.getElementById('btn-enviar');
+            const btnLoader = document.getElementById('btn-enviar-Loader');
+            const alerta = document.getElementById('alerta');
+
+            if (form) {
+                form.addEventListener('submit', function() {
+                    btnEnviar.style.display = 'none';
+                    btnLoader.style.display = 'block';
+                });
+
+                // Simulação de sucesso (remover em produção se FormSubmit redirecionar)
+                // Se você não usar redirecionamento do FormSubmit, pode mostrar o alerta:
+                window.addEventListener('load', function() {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    if (urlParams.get('success')) {
+                        alerta.classList.add('show');
+                        setTimeout(() => {
+                            alerta.classList.remove('show');
+                        }, 5000);
+                    }
+                });
+            }
+
+            // Atualizar ano no footer
+            document.getElementById('year').textContent = new Date().getFullYear();
+
+            // Smooth scroll para navegação
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function (e) {
+                    const href = this.getAttribute('href');
+                    if (href !== '#' && href !== '#linkedin' && href !== '#instagram' && 
+                        href !== '#facebook' && href !== '#whatsapp') {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) {
+                            target.scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start'
+                            });
+                        }
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>
